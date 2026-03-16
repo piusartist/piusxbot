@@ -6,27 +6,21 @@ const client = new Client({
     puppeteer: {
         headless: true,
         args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--single-process', // <- important for Render
-            '--disable-gpu'
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu"
         ]
     }
 });
 
-let autoReply = false;
-
 client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
-    console.log("Scan QR with WhatsApp");
+    qrcode.generate(qr, { small: true });
+    console.log("Scan the QR code to connect WhatsApp");
 });
 
 client.on('ready', () => {
-    console.log('✅ PIUSXBOT is Ready!');
+    console.log("PIUSXBOT Connected!");
 });
 
 client.on('message', async msg => {

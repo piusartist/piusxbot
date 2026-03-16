@@ -1,9 +1,9 @@
-// bot.js - PIUSXBOT
+// bot.js - PIUSXBOT ready for cloud deployment
 const fs = require('fs');
-const qrcode = require('qrcode');
+const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
-// Initialize client with local auth for persistent session
+// Initialize client with LocalAuth to persist session
 const client = new Client({
     authStrategy: new LocalAuth(), 
     puppeteer: {
@@ -20,31 +20,33 @@ const client = new Client({
     }
 });
 
-// Generate QR code if no session exists
+// Generate QR code if session doesn't exist
 client.on('qr', qr => {
-    // Print ASCII QR in server logs
-    const qrcodeTerminal = require('qrcode-terminal');
-    qrcodeTerminal.generate(qr, { small: true });
-    console.log('Scan the QR code with WhatsApp to connect PIUSXBOT');
+    console.log("📩 Scan this QR code with WhatsApp to connect PIUSXBOT:");
+    qrcode.generate(qr, { small: true }); // ASCII QR in logs
 
-    // Also save QR as PNG for easier scanning
+    // Save QR as image (optional)
     qrcode.toFile('qr.png', qr, { type: 'png' })
-        .then(() => console.log('QR code saved as qr.png — download to scan with your phone!'))
-        .catch(err => console.error('Failed to save QR code:', err));
+        .then(() => console.log("✅ QR code saved as qr.png — download it to scan"))
+        .catch(err => console.error("❌ Failed to save QR code:", err));
 });
 
-// Bot is ready
+// Bot ready
 client.on('ready', () => {
-    console.log('✅ PIUSXBOT Connected and Ready!');
+    console.log("✅ PIUSXBOT Connected and Ready!");
 });
 
-// Optional: log all messages received (you can remove if not needed)
-client.on('message', message => {
-    console.log(`📩 Message from ${message.from}: ${message.body}`);
+// Example: respond to messages
+client.on('message', async message => {
+    if (message.body === '!menu') {
+        await message.reply('Hello! PIUSXBOT Menu:\n1. Auto Status\n2. Auto Like\n3. Music\n4. Video\n5. AI Assistant\n6. Football updates\n7. Romance messages\n8. More coming soon...');
+    } else {
+        console.log(`📩 Message from ${message.from}: ${message.body}`);
+    }
 });
 
-// Prevent Node from exiting (keep alive)
+// Keep Node alive (server won't exit)
 setInterval(() => {}, 1000);
 
-// Initialize WhatsApp client
+// Start the client
 client.initialize();
